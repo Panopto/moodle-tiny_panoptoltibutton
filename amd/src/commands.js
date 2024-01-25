@@ -21,10 +21,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getButtonImage} from 'editor_tiny/utils';
-import {handleAction} from './ui';
-import {get_string as getString} from 'core/str';
-import {component, buttonName, icon} from './common';
+import {getButtonImage} from "editor_tiny/utils";
+import {handleAction} from "./ui";
+import {get_string as getString} from "core/str";
+import {component, buttonName, icon} from "./common";
+import {getTool} from "./options";
 
 export const getSetup = async() => {
     const [buttonText, buttonImage] = await Promise.all([
@@ -33,22 +34,26 @@ export const getSetup = async() => {
     ]);
 
     return (editor) => {
-        // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
-        editor.ui.registry.addIcon(icon, buttonImage.html);
 
-        // Register the Panopto LTI Video Toolbar Button.
-        editor.ui.registry.addToggleButton(buttonName, {
-            icon,
-            tooltip: buttonText,
-            onAction: () => handleAction(editor),
-        });
+        // Only show button if we have external tool configured.
+        if (getTool(editor)) {
+            // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
+            editor.ui.registry.addIcon(icon, buttonImage.html);
 
-        // Add the Panopto LTI Video Menu Item.
-        // This allows it to be added to a standard menu, or a context menu.
-        editor.ui.registry.addMenuItem(buttonName, {
-            icon,
-            text: buttonText,
-            onAction: () => handleAction(editor),
-        });
+            // Register the Panopto LTI Video Toolbar Button.
+            editor.ui.registry.addToggleButton(buttonName, {
+                icon,
+                tooltip: buttonText,
+                onAction: () => handleAction(editor),
+            });
+
+            // Add the Panopto LTI Video Menu Item.
+            // This allows it to be added to a standard menu, or a context menu.
+            editor.ui.registry.addMenuItem(buttonName, {
+                icon,
+                text: buttonText,
+                onAction: () => handleAction(editor),
+            });
+        }
     };
 };
