@@ -23,24 +23,29 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
 // The current plugin version (Date: YYYYMMDDXX).
-$plugin->version = 2023083100;
+$plugin->version = 2024012500;
 
-// Requires this Moodle version - 2.7.
-$plugin->requires = 2014051200;
+// Requires this Moodle version - 4.1.0
+$plugin->requires = 2022112800;
 
 // Full name of the plugin (used for diagnostics).
 $plugin->component = 'tiny_panoptoltibutton';
 
 // Supported versions.
-$plugin->supported = [401, 402];
+$plugin->supported = [
+    // Support from the Moodle 4.1 series.
+    401,
+
+    // To the Moodle 4.3 series.
+    403,
+];
 
 // This is considered as ready for production sites.
 $plugin->maturity = MATURITY_BETA;
 
 // Dependencies.
-$plugin->dependencies = array(
+$plugin->dependencies = [
     'block_panopto' => 2022122000,
-    'mod_lti' => ANY_VERSION
-);
+    'mod_lti' => ANY_VERSION,
+];
