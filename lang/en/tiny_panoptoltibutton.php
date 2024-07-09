@@ -23,6 +23,7 @@
 
 $string['modal_button_close'] = 'Close';
 $string['pluginname'] = 'Add Panopto Video';
+$string['helplinktext'] = 'PanoptoLTI Button';
 $string['panopto_button_description'] = 'Add Panopto Video';
 $string['panopto_button_long_description'] = 'Add Panopto Video Content to TinyMCE';
 $string['panopto_button_unprovisioned_error'] = 'Error: Please use the Panopto Block to provision this course before using this tool';
