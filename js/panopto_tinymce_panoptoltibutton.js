@@ -37,8 +37,8 @@ var panopto_tinymce_panoptoltibutton = {
             var StrategyClass = panopto_tinymce_panoptoltibutton.EmbeddedContentRenderingStrategy;
 
             if (   item.mediaType === 'application/vnd.ims.lti.v1.ltilink'
-                   || item.mediaType === 'application\\/vnd.ims.lti.v1.ltilink'
-                   || item.placementAdvice) {
+                || item.mediaType === 'application\\/vnd.ims.lti.v1.ltilink'
+                || item.placementAdvice) {
                 StrategyClass = panopto_tinymce_panoptoltibutton.IframeRenderingStrategy;
 
                 if (item.placementAdvice || item.iframe) {
@@ -67,7 +67,13 @@ var panopto_tinymce_panoptoltibutton = {
                 }
             }
 
-            var strategy = new StrategyClass(item, course, resourceLinkId, tool);
+            var strategy = new StrategyClass(
+                item,
+                course,
+                resourceLinkId,
+                tool,
+                wwwroot,
+            );
 
             return strategy;
         };
@@ -165,6 +171,7 @@ var panopto_tinymce_panoptoltibutton = {
                 if (mimeTypePieces[1] === 'vnd.ims.lti.v1.ltilink') {
 
                     content = TEMPLATES.ltiLink({
+                        wwwroot: wwwroot,
                         item: item,
                         toolid: tool.id,
                         resourcelinkid: resourceLinkId,
@@ -177,6 +184,7 @@ var panopto_tinymce_panoptoltibutton = {
                 break;
             case 'text':
                 content = TEMPLATES.link({
+                    wwwroot: wwwroot,
                     item: item,
                     custom: encodeURIComponent(JSON.stringify(item.custom)),
                     course: course,
@@ -185,7 +193,7 @@ var panopto_tinymce_panoptoltibutton = {
                     textHeight: textHeight,
                     titleHeight: titleHeight,
                     titleWidth: titleWidth,
-                    thumbnailId: thumbnailId
+                    thumbnailId: thumbnailId,
                 });
                 break;
             default:
@@ -205,8 +213,8 @@ var panopto_tinymce_panoptoltibutton = {
 
         // If the item URL is the same as the LTI Launch URL (or Content-Item request), we assume we need
         // to make an LTI Launch request.
-        if (item.url !== tool.baseurl && item.url !== tool.config.
-                toolurl_ContentItemSelectionRequest) {
+        if (   item.url !== tool.baseurl
+            && item.url !== tool.config.toolurl_ContentItemSelectionRequest) {
             item.useCustomUrl = true;
         }
 
@@ -230,6 +238,7 @@ var panopto_tinymce_panoptoltibutton = {
 
         this.toHtml = function () {
             return template({
+                wwwroot: wwwroot,
                 item: item,
                 custom: JSON.stringify(item.custom),
                 courseId: course.id,
