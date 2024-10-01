@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // The current plugin version (Date: YYYYMMDDXX).
-$plugin->version = 2024070900;
+$plugin->version = 2024100100;
 
 // Requires this Moodle version - 4.1.0
 $plugin->requires = 2022112800;
@@ -37,8 +37,8 @@ $plugin->supported = [
     // Support from the Moodle 4.1 series.
     401,
 
-    // To the Moodle 4.3 series.
-    403,
+    // To the Moodle 4.4 series.
+    404,
 ];
 
 // This is considered as ready for production sites.

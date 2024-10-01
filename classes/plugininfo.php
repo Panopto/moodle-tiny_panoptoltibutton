@@ -87,6 +87,10 @@ class plugininfo extends plugin implements
         global $COURSE, $CFG, $PAGE;
 
         $ltitool = \panoptoblock_lti_utility::get_course_tool($COURSE->id);
+
+        // Remove sensitive info from $config.
+        unset($ltitool->config['password'], $ltitool->config['servicesalt']);
+
         $resourcebase = sha1(
             $PAGE->url->__toString() . '&' . $PAGE->course->sortorder
                 . '&' . $PAGE->course->timecreated
