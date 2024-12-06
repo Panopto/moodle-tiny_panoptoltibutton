@@ -17,7 +17,7 @@
  * Panopto LTI button common values.
  *
  * @module     tiny_panoptoltibutton
- * @copyright  2023 Panopto
+ * @copyright  2024 Panopto
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

@@ -17,7 +17,7 @@
  * Tiny Panopto LTI configuration.
  *
  * @module     tiny_panoptoltibutton/configuration
- * @copyright  2023 Panopto
+ * @copyright  2024 Panopto
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -25,13 +25,13 @@ import {buttonName} from './common';
 import {addMenubarItem, addToolbarButton} from 'editor_tiny/utils';
 
 export const configure = (instanceConfig) => {
-    // Update the instance configuration to add the Panopto LTI Video menu option to the menus and toolbars.
+    const menu = instanceConfig.menu || [];
+    const toolbar = instanceConfig.toolbar || [];
+
     return {
-        menu: addMenubarItem(instanceConfig.menu, "insert", buttonName),
-        toolbar: addToolbarButton(
-            instanceConfig.toolbar,
-            "content",
-            buttonName
-        ),
+        ...instanceConfig,
+        menu: addMenubarItem(menu, "insert", buttonName),
+        toolbar: addToolbarButton(toolbar, "content", buttonName),
+        sandbox_iframes: false,
     };
 };
