@@ -17,7 +17,7 @@
  * Tiny Panopto LTI Video commands.
  *
  * @module     tiny_panoptoltibutton/commands
- * @copyright  2023 Panopto
+ * @copyright  2024 Panopto
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

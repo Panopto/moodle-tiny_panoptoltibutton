@@ -17,13 +17,12 @@
  * Tiny Panopto LTI Video plugin for Moodle.
  *
  * @module     tiny_panoptoltibutton
- * @copyright  2023 Panopto
+ * @copyright  2024 Panopto
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import { getTinyMCE } from "editor_tiny/loader";
 import { getPluginMetadata } from "editor_tiny/utils";
-
 import { component, pluginName } from "./common";
 import { register as registerOptions } from "./options";
 import { getSetup as getCommandSetup } from "./commands";
@@ -39,9 +38,10 @@ export default new Promise(async (resolve) => {
         getCommandSetup(),
     ]);
 
-    // Reminder: Any asynchronous code must be run before this point.
+    tinyMCE.init(Configuration.configure({}));
+
     tinyMCE.PluginManager.add(pluginName, (editor) => {
-        // Register any options that your plugin has
+        // Register any options that your plugin has.
         registerOptions(editor);
 
         // Setup any commands such as buttons, menu items, and so on.
