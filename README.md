@@ -35,7 +35,7 @@ enabled by confirming that its corresponding icon under the 'Enable' column show
 
 You can build all modules in Moodle by using the grunt amd command. To update the amd module from this plugin:
 1. Execute `npm install` on the root of the Moodle project.
-2. Navigate to `<moodle-root>/lib/editor/tiny/panoptoltibutton/amd/` and execute:
+2. Navigate to `<moodle-root>/lib/editor/tiny/plugins/panoptoltibutton/amd/` and execute:
 
 ```
 $ npx grunt amd
