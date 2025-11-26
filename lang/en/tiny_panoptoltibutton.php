@@ -17,14 +17,16 @@
 /**
  * Strings for component 'tiny_panoptoltibutton', language 'en'.
  *
- * @copyright Panopto 2009 - 2023
+ * @package    tiny_panoptoltibutton
+ * @copyright  2024 Panopto
+ * @author     Panopto
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['modal_button_close'] = 'Close';
-$string['pluginname'] = 'Add Panopto Video';
 $string['helplinktext'] = 'PanoptoLTI Button';
+$string['modal_button_close'] = 'Close';
 $string['panopto_button_description'] = 'Add Panopto Video';
 $string['panopto_button_long_description'] = 'Add Panopto Video Content to TinyMCE';
 $string['panopto_button_unprovisioned_error'] = 'Error: Please use the Panopto Block to provision this course before using this tool';
+$string['pluginname'] = 'Add Panopto Video';
 $string['privacy:metadata'] = 'No user data is stored by this plugin';

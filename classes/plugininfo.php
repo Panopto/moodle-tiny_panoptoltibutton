@@ -44,9 +44,8 @@ require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.p
  */
 class plugininfo extends plugin implements
     plugin_with_buttons,
-    plugin_with_menuitems,
-    plugin_with_configuration {
-
+    plugin_with_configuration,
+    plugin_with_menuitems {
     /**
      * Get a list of the buttons provided by this plugin.
      *
@@ -105,7 +104,7 @@ class plugininfo extends plugin implements
             'resourcebase' => $resourcebase,
             'panoptoltibuttondescription' => get_string('panopto_button_description', 'tiny_panoptoltibutton'),
             'panoptoltibuttonlongdescription' => get_string('panopto_button_long_description', 'tiny_panoptoltibutton'),
-            'unprovisionederror' => get_string('panopto_button_unprovisioned_error', 'tiny_panoptoltibutton')
+            'unprovisionederror' => get_string('panopto_button_unprovisioned_error', 'tiny_panoptoltibutton'),
         ];
     }
 }

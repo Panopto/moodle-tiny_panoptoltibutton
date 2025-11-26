@@ -15,15 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Handles content item return.
+ * This script handles the content item return process.
+ *
+ * It processes LTI content item returns, validates the response, and either
+ * triggers an error callback or dispatches the content items to the parent window.
  *
  * @package    tiny_panoptoltibutton
- * @copyright  2023 Panopto
+ * @copyright  2025 Panopto
  * @author     Panopto
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(dirname(__FILE__) . '/../../../../../config.php');
+require_once($CFG->dirroot . '/blocks/panopto/lib/panopto_data.php');
 require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
 require_once($CFG->dirroot . '/mod/lti/lib.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
@@ -61,13 +65,11 @@ $contentitems = json_decode($items);
 
 $errors = [];
 
-// Affirm that the content item is a JSON object.
 if (!is_object($contentitems) && !is_array($contentitems)) {
     $errors[] = 'invalidjson';
 }
 
 if ($islti1p3) {
-    // Update content items data if this is lti 1.3 and not embed.
     $doctarget = $contentitems->{'@graph'}[0]->placementAdvice->presentationDocumentTarget
                     ? $contentitems->{'@graph'}[0]->placementAdvice->presentationDocumentTarget
                     : ($contentitems->{'@graph'}[0]->iframe ? "iframe" : "frame");
@@ -80,12 +82,70 @@ if ($islti1p3) {
     }
 }
 
+// Provision the course for LTI.
+\panopto_data::provision_course_for_lti($courseid);
 ?>
 
 <script type="text/javascript">
-    <?php if (count($errors) > 0): ?>
+    <?php
+    /**
+     * Check for errors and handle accordingly.
+     *
+     * @package    tiny_panoptoltibutton
+     * @copyright  2025 Panopto
+     * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+     */
+    if (count($errors) > 0) : ?>
+        /**
+         * Trigger the handleError callback with the errors.
+         *
+         * @package    tiny_panoptoltibutton
+         * @copyright  2025 Panopto
+         * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+         */
         parent.document.CALLBACKS.handleError(<?php echo json_encode($errors); ?>);
-    <?php else: ?>
-        parent.document.CALLBACKS.<?php echo $callback ?>(<?php echo json_encode($contentitems) ?>);
-    <?php endif; ?>
+        <?php
+        /**
+         * Handle successful content item return.
+         *
+         * @package    tiny_panoptoltibutton
+         * @copyright  2025 Panopto
+         * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+         */
+    else : ?>
+        /**
+         * Trigger the handleContent callback with the content items.
+         *
+         * @package    tiny_panoptoltibutton
+         * @copyright  2025 Panopto
+         * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+         */
+        parent.document.CALLBACKS.
+                <?php
+                /**
+                 * Trigger the handleContent callback with the content items.
+                 *
+                 * @package    tiny_panoptoltibutton
+                 * @copyright  2025 Panopto
+                 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+                 */
+                echo $callback ?>(
+                    <?php
+                    /**
+                     * Trigger the handleContent callback with the content items.
+                     *
+                     * @package    tiny_panoptoltibutton
+                     * @copyright  2025 Panopto
+                     * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+                     */
+                    echo json_encode($contentitems) ?>);
+        <?php
+        /**
+         * End of if-else statement.
+         *
+         * @package    tiny_panoptoltibutton
+         * @copyright  2025 Panopto
+         * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+         */
+    endif; ?>
 </script>
