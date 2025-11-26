@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,41 +12,28 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Panopto LTI Button version.
+ * Capability definitions for the tiny_panoptoltibutton plugin.
  *
  * @package    tiny_panoptoltibutton
  * @copyright  2025 Panopto
+ * @author     Panopto
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-// The current plugin version (Date: YYYYMMDDXX).
-$plugin->version = 2025112600;
-
-// Requires this Moodle version - 4.1.0.
-$plugin->requires = 2022112800;
-
-// Full name of the plugin (used for diagnostics).
-$plugin->component = 'tiny_panoptoltibutton';
-
-// Supported versions.
-$plugin->supported = [
-    // Support from the Moodle 4.1 series.
-    401,
-
-    // To the Moodle 5.1 series.
-    501,
-];
-
-// This is considered ready for production sites.
-$plugin->maturity = MATURITY_STABLE;
-
-// Dependencies.
-$plugin->dependencies = [
-    'block_panopto' => 2022122000,
-    'mod_lti' => ANY_VERSION,
+$capabilities = [
+    'tiny/panoptoltibutton:use' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => [
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
 ];

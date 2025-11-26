@@ -28,8 +28,11 @@ if (empty($CFG)) {
     // @codingStandardsIgnoreLine
     require_once(dirname(__FILE__) . '/../../../../../config.php');
 }
+
+require_login();
+
 require_once($CFG->dirroot . '/blocks/panopto/lib/block_panopto_lib.php');
-require_once($CFG->libdir .'/accesslib.php'); // Access control functions.
+require_once($CFG->libdir . '/accesslib.php'); // Access control functions.
 require_once($CFG->dirroot . '/mod/lti/lib.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
@@ -58,8 +61,6 @@ if ($contentverified) {
     $ltitypeid = required_param('ltitypeid', PARAM_INT);
     $customdata = optional_param('custom', '', PARAM_RAW_TRIMMED);
 
-    require_login();
-
     // Make sure $ltitypeid is valid.
     $ltitype = $DB->get_record('lti_types', ['id' => $ltitypeid], '*', MUST_EXIST);
 
@@ -72,12 +73,18 @@ if ($contentverified) {
         parse_str($components['query'], $results);
 
         if (!empty($results['id'])) {
-            $lti->course = $results['id'];
-            $course = $DB->get_record('course', array('id' => $results['id']), '*', MUST_EXIST);
-            $courseid = $course->id;
-            $context = context_course::instance($results['id']);
-            $PAGE->set_context($context);
-            require_login($course, true);
+            // Clean and validate the course ID parameter from referer URL for security.
+            $cleancourseid = clean_param($results['id'], PARAM_INT);
+
+            // Additional validation to ensure it's a positive integer.
+            if ($cleancourseid > 0) {
+                $lti->course = $cleancourseid;
+                $course = $DB->get_record('course', ['id' => $cleancourseid], '*', MUST_EXIST);
+                $courseid = $course->id;
+                $context = context_course::instance($cleancourseid);
+                $PAGE->set_context($context);
+                require_login($course, true);
+            }
         }
     }
 
@@ -100,7 +107,8 @@ if ($contentverified) {
     $config = lti_get_type_type_config($ltitypeid);
     if ($config->lti_ltiversion === LTI_VERSION_1P3) {
         if (!isset($SESSION->lti_initiatelogin_status)) {
-            echo lti_initiate_login($courseid,
+            echo lti_initiate_login(
+                $courseid,
                 "tiny_panoptoltibutton,'',{$ltitypeid},{$resourcelinkid},{$contenturl},{$customdata}",
                 $lti,
                 $config

@@ -125,7 +125,7 @@ var panopto_tinymce_panoptoltibutton = {
 
         TEMPLATES = {
             ltiLink: Handlebars.compile('<iframe src="{{wwwroot}}/lib/editor/tiny/plugins/panoptoltibutton/view.php?custom={{custom}}&'
-                + 'course={{course.id}}&ltitypeid={{toolid}}&resourcelinkid={{resourcelinkid}}'
+                + 'course={{course}}&ltitypeid={{toolid}}&resourcelinkid={{resourcelinkid}}'
                 + '{{#if item.url}}&contenturl={{item.url}}{{/if}}'
                 + '" '
                 + '{{#if item.placementAdvice.width}} width="{{item.placementAdvice.displayWidth}}"{{/if}} '
@@ -137,7 +137,7 @@ var panopto_tinymce_panoptoltibutton = {
                         + (item.displayWidth ? 'width:{{item.displayWidth}};' : '')
                         + 'height:{{titleHeight}};">'
                         + '<a href="{{wwwroot}}/lib/editor/tiny/plugins/panoptoltibutton/view.php?custom={{custom}}&'
-                        + 'course={{course.id}}&ltitypeid={{toolid}}&resourcelinkid={{resourcelinkid}}'
+                        + 'course={{course}}&ltitypeid={{toolid}}&resourcelinkid={{resourcelinkid}}'
                         + '{{#if item.url}}&contenturl={{item.url}}{{/if}}'
                         + '" '
                         + '{{#if item.placementAdvice.windowTarget}}target="{{item.placementAdvice.windowTarget}}" {{/if}}'
@@ -241,7 +241,7 @@ var panopto_tinymce_panoptoltibutton = {
                 wwwroot: wwwroot,
                 item: item,
                 custom: JSON.stringify(item.custom),
-                courseId: course.id,
+                courseId: course,
                 resourcelinkid: resourceLinkId,
                 ltiTypeId: tool.id,
                 displayHeight: displayHeight,
