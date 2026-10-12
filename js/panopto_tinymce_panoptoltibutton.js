@@ -130,7 +130,7 @@ var panopto_tinymce_panoptoltibutton = {
                 + '" '
                 + '{{#if item.placementAdvice.width}} width="{{item.placementAdvice.displayWidth}}"{{/if}} '
                 + '{{#if item.placementAdvice.height}} height="{{item.placementAdvice.displayHeight}}"{{/if}} '
-                + 'allowfullscreen="true" '
+                + 'allowfullscreen="true" loading="lazy"'
                 + '/>'
             ),
             link: Handlebars.compile('<div style="'
@@ -232,7 +232,7 @@ var panopto_tinymce_panoptoltibutton = {
                 + '&resourcelinkid={{resourcelinkid}}" '
                 + ' {{#if displayWidth}}width="{{displayWidth}}" {{/if}}'
                 + ' {{#if displayHeight}}height="{{displayHeight}}" {{/if}}'
-                + 'allowfullscreen="true" '
+                + 'allowfullscreen="true" loading="lazy"'
                 + '></iframe>'
                 );
 
