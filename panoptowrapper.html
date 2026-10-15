@@ -56,12 +56,19 @@
                 // Add the panopto error text to the error container. Also hide the iframe so the user does not try to access a broken iframe.
                 $('#errorcontainer').css("display", "block");
                 $('#pageframe').css("display", "none");
-                $('#errorcontainer').html(unprovisionederror);
+                $('#errorcontainer').text(unprovisionederror);
             } else {
-                $('#pageframe').attr('src', wwwroot + contentitempath +
+                var pageframesrc = wwwroot + contentitempath +
                     '?course=' + courseid +
                     '&id=' + tool.id +
-                    '&callback=f' + resourceLinkId);
+                    '&callback=f' + resourceLinkId;
+                if (/^https?:\/\//i.test(wwwroot)) {
+                    $('#pageframe').attr('src', pageframesrc);
+                } else {
+                    $('#errorcontainer').css("display", "block");
+                    $('#pageframe').css("display", "none");
+                    $('#errorcontainer').text(unprovisionederror);
+                }
             }
         });
     </script>
