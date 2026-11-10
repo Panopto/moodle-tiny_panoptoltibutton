@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // The current plugin version (Date: YYYYMMDDXX).
-$plugin->version = 2026073000;
+$plugin->version = 2026111000;
 
 // Requires this Moodle version - 4.5.0.
 $plugin->requires = 2024100700;
@@ -38,8 +38,8 @@ $plugin->supported = [
     // Support from the Moodle 4.5 series.
     405,
 
-    // To the Moodle 5.2 series.
-    502,
+    // To the Moodle 5.3 series.
+    503,
 ];
 
 // This is considered ready for production sites.
@@ -47,6 +47,6 @@ $plugin->maturity = MATURITY_STABLE;
 
 // Dependencies.
 $plugin->dependencies = [
-    'block_panopto' => 2022122000,
+    'block_panopto' => 2026092200,
     'mod_lti' => ANY_VERSION,
 ];

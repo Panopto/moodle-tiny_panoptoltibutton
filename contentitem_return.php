@@ -41,26 +41,27 @@ $jwt = optional_param('JWT', '', PARAM_RAW);
 
 tiny_panoptoltibutton_require_login_or_repost($courseid);
 
+require_sesskey();
+
 $context = context_course::instance($courseid);
+
+// Use the same capability gate as contentitem.php.
+require_capability('tiny/panoptoltibutton:use', $context);
 
 $config = lti_get_type_type_config($id);
 $islti1p3 = $config->lti_ltiversion === LTI_VERSION_1P3;
 
-if (!empty($jwt)) {
+// Require a signed LTI return.
+if ($islti1p3) {
+    if ($jwt === '') {
+        throw new moodle_exception('errorinvalidsignature', 'tiny_panoptoltibutton');
+    }
     $params = lti_convert_from_jwt($id, $jwt);
-    $consumerkey = $params['oauth_consumer_key'] ?? '';
-    $messagetype = $params['lti_message_type'] ?? '';
     $items = $params['content_items'] ?? '';
-    $version = $params['lti_version'] ?? '';
-    $errormsg = $params['lti_errormsg'] ?? '';
-    $msg = $params['lti_msg'] ?? '';
 } else {
     $consumerkey = required_param('oauth_consumer_key', PARAM_RAW);
-    $messagetype = required_param('lti_message_type', PARAM_TEXT);
-    $version = required_param('lti_version', PARAM_TEXT);
     $items = optional_param('content_items', '', PARAM_RAW_TRIMMED);
-    $errormsg = optional_param('lti_errormsg', '', PARAM_TEXT);
-    $msg = optional_param('lti_msg', '', PARAM_TEXT);
+    lti_verify_oauth_signature($id, $consumerkey);
 }
 
 $contentitems = json_decode($items);
@@ -71,16 +72,29 @@ if (!is_object($contentitems) && !is_array($contentitems)) {
     $errors[] = 'invalidjson';
 }
 
-if ($islti1p3) {
-    $doctarget = $contentitems->{'@graph'}[0]->placementAdvice->presentationDocumentTarget
-                    ? $contentitems->{'@graph'}[0]->placementAdvice->presentationDocumentTarget
-                    : ($contentitems->{'@graph'}[0]->iframe ? "iframe" : "frame");
-    $thumbnail = $contentitems->{'@graph'}[0]->thumbnail;
+// Reshape LTI 1.3 content only when the payload decoded.
+if ($islti1p3 && empty($errors)) {
+    $graphitem = $contentitems->{'@graph'}[0] ?? null;
+    $placementadvice = $graphitem->placementAdvice ?? null;
+
+    $doctarget = !empty($placementadvice->presentationDocumentTarget)
+        ? $placementadvice->presentationDocumentTarget
+        : (!empty($graphitem->iframe) ? 'iframe' : 'frame');
+
+    $thumbnail = $graphitem->thumbnail ?? null;
+
     if ($doctarget == 'iframe' && !empty($thumbnail)) {
-        $contentitems->{'@graph'}[0]->placementAdvice->presentationDocumentTarget = 'frame';
-        $contentitems->{'@graph'}[0]->placementAdvice->windowTarget = '_blank';
-        $contentitems->{'@graph'}[0]->{'@type'} = 'ContentItem';
-        $contentitems->{'@graph'}[0]->mediaType = 'text/html';
+        // Create placementAdvice when the iframe fallback left it null.
+        if (is_null($placementadvice)) {
+            $placementadvice = new stdClass();
+            $graphitem->placementAdvice = $placementadvice;
+        }
+
+        // These changes land on the payload.
+        $placementadvice->presentationDocumentTarget = 'frame';
+        $placementadvice->windowTarget = '_blank';
+        $graphitem->{'@type'} = 'ContentItem';
+        $graphitem->mediaType = 'text/html';
     }
 }
 
@@ -134,13 +148,13 @@ if ($islti1p3) {
                 echo $callback ?>(
                     <?php
                     /**
-                     * Trigger the handleContent callback with the content items.
+                     * Escape script delimiters.
                      *
                      * @package    tiny_panoptoltibutton
                      * @copyright  2025 Panopto
                      * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
                      */
-                    echo json_encode($contentitems) ?>);
+                    echo json_encode($contentitems, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>);
         <?php
         /**
          * End of if-else statement.

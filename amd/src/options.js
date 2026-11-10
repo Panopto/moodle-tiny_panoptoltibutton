@@ -42,6 +42,10 @@ const unprovisionederror = getPluginOptionName(
     pluginName,
     "unprovisionederror"
 );
+const panoptofilteractive = getPluginOptionName(
+    pluginName,
+    "panoptofilteractive"
+);
 
 /**
  * Options registration function.
@@ -76,6 +80,10 @@ export const register = (editor) => {
     });
     registerOption(unprovisionederror, {
         processor: "string",
+    });
+    registerOption(panoptofilteractive, {
+        processor: "boolean",
+        default: false,
     });
 };
 
@@ -145,3 +153,12 @@ export const getPanoptoLtiButtonLongDescription = (editor) =>
  */
 export const getUnprovisionedError = (editor) =>
     editor.options.get(unprovisionederror);
+
+/**
+ * Fetch whether filter_panopto is active where this editor's content is shown.
+ *
+ * @param {tinyMCE} editor The editor instance to fetch the value for
+ * @returns {boolean} The value of the panoptofilteractive option
+ */
+export const isPanoptoFilterActive = (editor) =>
+    editor.options.get(panoptofilteractive);

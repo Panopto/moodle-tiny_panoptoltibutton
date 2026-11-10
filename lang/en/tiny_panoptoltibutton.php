@@ -23,11 +23,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['errorinvalidsignature'] = 'The response from Panopto could not be verified. Please try again.';
 $string['helplinktext'] = 'PanoptoLTI Button';
+$string['invalid_content_host'] = 'The host for the target content must match one of the Panopto servers configured in the Panopto block for Moodle. If no Panopto server has been configured yet, ask your Moodle administrator to finish setting up the Panopto block.';
+$string['invalid_lti_tool'] = 'This Panopto content uses an external tool that is not a configured Panopto tool on this site. Please ask your Moodle administrator to check the Panopto LTI tool configuration.';
 $string['modal_button_close'] = 'Close';
 $string['panopto_button_description'] = 'Add Panopto Video';
 $string['panopto_button_long_description'] = 'Add Panopto Video Content to TinyMCE';
 $string['panopto_button_unprovisioned_error'] = 'Error: Please use the Panopto Block to provision this course before using this tool';
+$string['panopto_video_default_title'] = 'Panopto video';
 $string['panoptoltibutton:use'] = 'Use Panopto button';
 $string['pluginname'] = 'Add Panopto Video';
 $string['privacy:metadata'] = 'No user data is stored by this plugin';

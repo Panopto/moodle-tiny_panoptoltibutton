@@ -31,8 +31,7 @@ use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_menuitems;
 use editor_tiny\plugin_with_configuration;
 
-require_once(dirname(__FILE__) . '/../../../../../../config.php');
-require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Tiny Panopto LTI Video plugin.
@@ -85,7 +84,16 @@ class plugininfo extends plugin implements
     ): array {
         global $COURSE, $CFG, $PAGE;
 
-        $ltitool = \panoptoblock_lti_utility::get_course_tool($COURSE->id);
+        require_once($CFG->dirroot . '/blocks/panopto/lib/lti/panoptoblock_lti_utility.php');
+
+        // Contentitem.php requires this capability, and commands.js only registers the button
+        // when a tool is present - so withholding the tool is what hides the button. Without
+        // this the button shows for users who are then denied when they click it.
+        if (!has_capability('tiny/panoptoltibutton:use', $context)) {
+            $ltitool = null;
+        } else {
+            $ltitool = \panoptoblock_lti_utility::get_course_tool($COURSE->id);
+        }
 
         if (!empty($ltitool)) {
             // Remove sensitive info from $config.
@@ -107,6 +115,9 @@ class plugininfo extends plugin implements
             'panoptoltibuttondescription' => get_string('panopto_button_description', 'tiny_panoptoltibutton'),
             'panoptoltibuttonlongdescription' => get_string('panopto_button_long_description', 'tiny_panoptoltibutton'),
             'unprovisionederror' => get_string('panopto_button_unprovisioned_error', 'tiny_panoptoltibutton'),
+            // Moodle removes iframes when it cleans text, so where filter_panopto shows videos the
+            // editor saves them as its marker links instead.
+            'panoptofilteractive' => array_key_exists('panopto', filter_get_active_in_context($context)),
         ];
     }
 }

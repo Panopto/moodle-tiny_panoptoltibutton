@@ -7,11 +7,61 @@
     <script src="js/panopto_tinymce_panoptoltibutton.js"></script>
 
     <script>
+        // The directory this wrapper is served from. The Moodle root and the content-item
+        // endpoint are both derived from it: the URL fragment never reaches the server, so
+        // anything read from it has to be treated as attacker supplied.
+        var PLUGIN_PATH = '/lib/editor/tiny/plugins/panoptoltibutton/';
+        var CONTENT_ITEM_PATH = PLUGIN_PATH + 'contentitem.php';
+
         // Got code to grab hash from url from the following StackOverflow post.
         // http://stackoverflow.com/questions/11920697/how-to-get-hash-value-in-a-url-in-js
         function getHashValue(key) {
-            var matches = location.hash.match(new RegExp(key+'=([^&]*)'));
+            var matches = location.hash.match(new RegExp(key + '=([^&]*)'));
             return matches ? matches[1] : null;
+        }
+
+        function safeDecode(value) {
+            try {
+                return decodeURIComponent(value);
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function getMoodleRoot() {
+            var path = window.location.pathname,
+                pluginIndex = path.indexOf(PLUGIN_PATH);
+
+            return window.location.origin + (pluginIndex > -1 ? path.substring(0, pluginIndex) : '');
+        }
+
+        function getPositiveIntHashValue(key) {
+            var value = getHashValue(key);
+
+            return /^[0-9]+$/.test(value) && parseInt(value, 10) > 0 ? value : null;
+        }
+
+        function getAlphanumericHashValue(key) {
+            var value = getHashValue(key);
+
+            return value && /^[A-Za-z0-9_-]+$/.test(value) ? value : null;
+        }
+
+        function getToolHashValue() {
+            var raw = getHashValue('tool'),
+                parsed;
+
+            if (!raw) {
+                return null;
+            }
+
+            try {
+                parsed = JSON.parse(safeDecode(raw));
+            } catch (e) {
+                return null;
+            }
+
+            return parsed && /^[0-9]+$/.test(String(parsed.id)) ? parsed : null;
         }
 
         function createResourceLinkIdPanoptoTinymceLTI(base) {
@@ -19,49 +69,50 @@
         };
 
             // Get the courseId and toolid that was set by TinyMCE popup call.
-        var courseid = getHashValue('courseid'),
-            tool = JSON.parse(decodeURIComponent(getHashValue('tool'))),
-            resourceLinkId = createResourceLinkIdPanoptoTinymceLTI(getHashValue('resourcebase')),
-            unprovisionederror = decodeURIComponent(getHashValue('unprovisionerror')),
-            wwwroot = decodeURIComponent(getHashValue('wwwroot')),
-            contentitempath = decodeURIComponent(getHashValue('contentitempath'));
+        var courseid = getPositiveIntHashValue('courseid'),
+            tool = getToolHashValue(),
+            resourceBase = getAlphanumericHashValue('resourcebase'),
+            resourceLinkId = resourceBase ? createResourceLinkIdPanoptoTinymceLTI(resourceBase) : null,
+            unprovisionederror = safeDecode(getHashValue('unprovisionerror')),
+            moodleRoot = getMoodleRoot();
 
         $(document).ready(function () {
             document.CALLBACKS = {
                 handleError: function (errors) {
-                    alert(errorMessage);
                     for (var i = 0; i < errors.length; i++) {
                         console.error(errors[i]);
                     }
                 }
             };
 
-            document.CALLBACKS['f' + resourceLinkId] = function (contentItemData) {
-                if (!contentItemData) {
-                    return;
-                }
+            if (resourceLinkId) {
+                document.CALLBACKS['f' + resourceLinkId] = function (contentItemData) {
+                    if (!contentItemData) {
+                        return;
+                    }
 
-                for (var i = 0; i < contentItemData['@graph'].length; i++) {
-                    var item = contentItemData['@graph'][i];
-                    var strategyFactory = new panopto_tinymce_panoptoltibutton.PlacementStrategyFactory();
-                    var strategy = strategyFactory.strategyFor(item, courseid, resourceLinkId, tool, wwwroot);
-                    var render = strategy.toHtml;
-                    window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, render(item));
-                }
+                    for (var i = 0; i < contentItemData['@graph'].length; i++) {
+                        var item = contentItemData['@graph'][i];
+                        var strategyFactory = new panopto_tinymce_panoptoltibutton.PlacementStrategyFactory();
+                        var strategy = strategyFactory.strategyFor(item, courseid, resourceLinkId, tool, moodleRoot);
+                        var render = strategy.toHtml;
+                        window.parent.tinyMCE.activeEditor.execCommand('mceInsertContent', 0, render(item));
+                    }
 
-                window.parent.closeModal();
-            };
+                    window.parent.closeModal();
+                };
+            }
 
-            if (!courseid || !tool) {
+            if (!courseid || !tool || !resourceLinkId) {
                 // Add the panopto error text to the error container. Also hide the iframe so the user does not try to access a broken iframe.
                 $('#errorcontainer').css("display", "block");
                 $('#pageframe').css("display", "none");
-                $('#errorcontainer').html(unprovisionederror);
+                $('#errorcontainer').text(unprovisionederror);
             } else {
-                $('#pageframe').attr('src', wwwroot + contentitempath +
-                    '?course=' + courseid +
-                    '&id=' + tool.id +
-                    '&callback=f' + resourceLinkId);
+                $('#pageframe').attr('src', moodleRoot + CONTENT_ITEM_PATH +
+                    '?course=' + encodeURIComponent(courseid) +
+                    '&id=' + encodeURIComponent(tool.id) +
+                    '&callback=f' + encodeURIComponent(resourceLinkId));
             }
         });
     </script>

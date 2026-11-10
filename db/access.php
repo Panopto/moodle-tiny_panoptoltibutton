@@ -32,8 +32,9 @@ $capabilities = [
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
         ],
-        'clonepermissionsfrom' => 'moodle/course:manageactivities',
+        // No clone source, so archetypes are not inherited.
     ],
 ];

@@ -32,6 +32,5 @@ export const configure = (instanceConfig) => {
         ...instanceConfig,
         menu: addMenubarItem(menu, "insert", buttonName),
         toolbar: addToolbarButton(toolbar, "content", buttonName),
-        sandbox_iframes: false,
     };
 };
