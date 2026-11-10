@@ -128,6 +128,7 @@ var panopto_tinymce_panoptoltibutton = {
                 + 'course={{course}}&ltitypeid={{toolid}}&resourcelinkid={{resourcelinkid}}'
                 + '{{#if item.url}}&contenturl={{item.url}}{{/if}}'
                 + '" '
+                + '{{#if item.title}} title="{{item.title}}"{{/if}} '
                 + '{{#if item.placementAdvice.width}} width="{{item.placementAdvice.displayWidth}}"{{/if}} '
                 + '{{#if item.placementAdvice.height}} height="{{item.placementAdvice.displayHeight}}"{{/if}} '
                 + 'allowfullscreen="true" '
@@ -143,7 +144,7 @@ var panopto_tinymce_panoptoltibutton = {
                         + '{{#if item.placementAdvice.windowTarget}}target="{{item.placementAdvice.windowTarget}}" {{/if}}'
                         + '>'
                             + '{{#if item.thumbnail}}'
-                            + '<img src={{thumbnailId}} alt="content thumbnail"'
+                            + '<img src="{{thumbnailId}}" alt="content thumbnail" '
                             + 'style="float:left;margin-right:5px;'
                             + 'width:{{item.thumbnail.width}}px;'
                             + 'height:{{item.thumbnail.height}}px;'
@@ -189,7 +190,7 @@ var panopto_tinymce_panoptoltibutton = {
                     custom: encodeURIComponent(JSON.stringify(item.custom)),
                     course: course,
                     toolid: tool.id,
-                    resourcelnkid: resourceLinkId,
+                    resourcelinkid: resourceLinkId,
                     textHeight: textHeight,
                     titleHeight: titleHeight,
                     titleWidth: titleWidth,
@@ -230,6 +231,7 @@ var panopto_tinymce_panoptoltibutton = {
                 + '&ltitypeid={{ltiTypeId}}&custom={{custom}}'
                 + '{{#if item.useCustomUrl}}&contenturl={{item.url}}{{/if}}'
                 + '&resourcelinkid={{resourcelinkid}}" '
+                + ' {{#if item.title}}title="{{item.title}}" {{/if}}'
                 + ' {{#if displayWidth}}width="{{displayWidth}}" {{/if}}'
                 + ' {{#if displayHeight}}height="{{displayHeight}}" {{/if}}'
                 + 'allowfullscreen="true" '

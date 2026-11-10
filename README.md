@@ -1,59 +1,62 @@
-# moodle-tiny_panoptoltibutton
-This plugin adds a button to the TinyMCE Text Editor to allow for teachers and students to embed Panopto content using existing Panopto LTI tools
+# Panopto LTI button for TinyMCE
 
+Adds an **Add Panopto Video** button to Moodle’s **TinyMCE** editor so teachers and students can insert a Panopto video into any TinyMCE field (labels, forum posts, quiz questions, and so on).
 
-## Prerequisites for using the Panopto Button plugin for TinyMCE:
+This is the editor button to use on Moodle **5.0 and later**. Sites still using Atto can use the [Atto Panopto button](https://github.com/Panopto/Panopto-LTI-Button-for-Atto) instead.
 
-* Access to the server where Moodle is installed and running. As this plugin is not registered for automatic update, it cannot be upgraded from Moodle
-UI and requires direct access to the server.
-* The Moodle 2.0 Plugin for Panopto. The plugin and instructions for installation may be found at
-  https://github.com/Panopto/Moodle-2.0-Plugin-for-Panopto
-* The TinyMCE rich text editor for Moodle. This may be enabled by navigating to **Site Administration > Plugins > Text editors > Manage editors** on
-the left-hand column of the Moodle page and using the up/down arrows to move 'TinyMCE editor' to the top of the list. Make sure that TinyMCE is
-enabled by confirming that its corresponding icon under the 'Enable' column shows an unobstructed eye, or click the icon until it appears this way.
+## Who it is for
 
+- **Teachers and students** click **Add Panopto Video** in TinyMCE and pick a video.
+- **Administrators** install the plugin, enable TinyMCE, and make sure the Panopto block is set up.
 
-## Installation instructions:
+## Requirements
 
-1. Get the latest release source package (either as zip or tar.gz) from https://github.com/Panopto/moodle-tiny_panoptoltibutton/releases
-1. Log in to Moodle as an Admin.
-1. Navigate to **System Administration > Plugins > Install Plugins**
-1. Drag the .zip of the latest release over the drag and drop section to install a plugin.
-1. Moodle should detect the new/upgraded plug-in and show "Plugins check" screen which prompts you to install/upgrade. Click  "Upgrade Moodle database now" button to proceed.
-1. After installation is completed, visit **Site Administration > Plugins > Text Editors > General Settings** and confirm that 'Add Panopto Video' has been added to the list of installed plugins for TinyMCE.
-1. The Panopto LTI button for TinyMCE should now be installed and will appear on all rich text input windows throughout the Moodle site.
+- A supported **Moodle** version. Each [GitHub release](https://github.com/Panopto/moodle-tiny_panoptoltibutton/releases) lists the Moodle versions that zip supports — check those notes and pick the release that matches your site.
+- The [Panopto block](https://github.com/Panopto/Moodle-2.0-Plugin-for-Panopto)
+- Moodle’s **External tool (LTI)** module and a Panopto LTI tool
+- The **TinyMCE** editor enabled (**Site administration → Plugins → Text editors → Manage editors**)
+- The course **provisioned** with Panopto through the block
 
-## Usage:
+The button only lists LTI tools whose URL matches the Panopto server that course is provisioned to.
 
-1. On a rich text input window on the Moodle site, navigate the cursor to the position at which you would like your content to be inserted and click the Panopto dropdown button (the button containing the green Panopto logo and a dropdown icon).
-1. We only show existing LTI tool that have a Tool URL that matches the Panopto server a course is provisioned with. At this time Panopto only supports embedding rich text editor LTI content from pages associated with a course provisioned by the Panopto block.
-1. After selecting an item in the dropdown a new window will appear containing the selected Panopto LTI tool. From here the user can select and embed content depending on what LTI tool was selected.
+## Installation
 
-## Making changes to the code:
+1. Download a release from [GitHub](https://github.com/Panopto/moodle-tiny_panoptoltibutton/releases).
+2. In Moodle, go to **Site administration → Plugins → Install plugins**.
+3. Drop the zip onto the install page and complete the upgrade.
+4. Go to **Site administration → Plugins → Text editors → TinyMCE editor** and confirm **Add Panopto Video** is listed.
+5. Put TinyMCE at the top of **Manage editors** if it is not already the default.
 
-### Update AMD module
+The button then appears in TinyMCE on the site. Users who should see it need the `tiny/panoptoltibutton:use` capability (teachers and students have it by default on a new install).
 
-You can build all modules in Moodle by using the grunt amd command. To update the amd module from this plugin:
-1. Execute `npm install` on the root of the Moodle project.
-2. Navigate to `<moodle-root>/lib/editor/tiny/plugins/panoptoltibutton/amd/` and execute:
+## Usage
+
+1. In a TinyMCE field, put the cursor where the video should go.
+2. Click **Add Panopto Video**.
+3. Select the session in the Panopto window. The embed is inserted into the editor.
+
+If you see an error asking you to provision the course, add the Panopto block to that course and provision a folder first.
+
+## For developers
+
+### AMD modules
+
+From the Moodle root, after `npm install`:
 
 ```
-$ npx grunt amd
+cd lib/editor/tiny/plugins/panoptoltibutton/amd
+npx grunt amd
 ```
 
 ### Development mode
 
-In development mode Moodle will also send the browser the corresponding source map files for each of the JavaScript modules. The source map files will tell the browser how to map the minified source code back to the un-minified original source code so that the original source files will be displayed in the sources section of the browser's development tools.
-
-To enable development mode set the cachejs config value to false in the admin settings or directly in your config.php file:
+To load unminified JavaScript in the browser, disable JS caching in config.php:
 
 ```
-// Prevent JS caching
 $CFG->cachejs = false;
 ```
 
-## Deploy new version
+### Releasing
 
-1. Increment the version in version.php by 1 (e.g. change 2020061000 to 2020061001)
-1. Add everything except the .git and node_modules folder to a zip archive
-1. Treat the zip archive as a new release and follow the installation instructions above. As long as the version is higher than the currently installed version an update should trigger.
+1. Bump `$plugin->version` in `version.php`.
+2. Zip the plugin (omit `.git` and `node_modules`) and install it as a new release.

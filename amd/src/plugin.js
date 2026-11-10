@@ -26,16 +26,18 @@ import { getPluginMetadata } from "editor_tiny/utils";
 import { component, pluginName } from "./common";
 import { register as registerOptions } from "./options";
 import { getSetup as getCommandSetup } from "./commands";
+import { getSetup as getFilterContentSetup } from "./filtercontent";
 import * as Configuration from "./configuration";
 
 // Setup the tiny_panoptoltibutton Plugin.
 export default new Promise(async (resolve) => {
     // Note: The PluginManager.add function does not support asynchronous configuration.
     // Perform any asynchronous configuration here, and then call the PluginManager.add function.
-    const [tinyMCE, pluginMetadata, setupCommands] = await Promise.all([
+    const [tinyMCE, pluginMetadata, setupCommands, setupFilterContent] = await Promise.all([
         getTinyMCE(),
         getPluginMetadata(component, pluginName),
         getCommandSetup(),
+        getFilterContentSetup(),
     ]);
 
     tinyMCE.init(Configuration.configure({}));
@@ -46,6 +48,9 @@ export default new Promise(async (resolve) => {
 
         // Setup any commands such as buttons, menu items, and so on.
         setupCommands(editor);
+
+        // Save videos as filter_panopto marker links where that filter is active.
+        setupFilterContent(editor);
 
         // Return the pluginMetadata object. This is used by TinyMCE to display a help link for your plugin.
         return pluginMetadata;

@@ -40,6 +40,18 @@ const LTI_TINY_PATH = '/lib/editor/tiny/plugins/panoptoltibutton/contentitem_ret
 // Check access and capabilities.
 $course = get_course($courseid);
 
+// Authenticate and authorise before anything else: the LTI 1.3 branch below exits, so
+// checks placed after it never run on the first pass of a 1.3 launch.
+require_login($course);
+
+$context = context_course::instance($courseid);
+
+// Gate on the capability this plugin declares for exactly this purpose. The previous
+// enrolment probe used mod/assign:submit, which the non-editing teacher role does not hold,
+// and both fallbacks are editing-teacher capabilities - so teachers saw the button in the
+// editor and were denied on click.
+require_capability('tiny/panoptoltibutton:use', $context);
+
 // LTI 1.3 login request.
 $config = lti_get_type_type_config($id);
 
@@ -64,10 +76,6 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
         unset($SESSION->lti_initiatelogin_status);
     }
 }
-
-require_login($course);
-
-$context = context_course::instance($courseid);
 
 // Set the return URL. We send the launch container along to help us avoid
 // frames-within-frames when the user returns.
