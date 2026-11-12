@@ -31,8 +31,6 @@ use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_menuitems;
 use editor_tiny\plugin_with_configuration;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Tiny Panopto LTI Video plugin.
  *
