@@ -31,8 +31,6 @@ use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_menuitems;
 use editor_tiny\plugin_with_configuration;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Tiny Panopto LTI Video plugin.
  *
@@ -105,10 +103,9 @@ class plugininfo extends plugin implements
                 . '&' . $PAGE->course->timecreated
         );
 
-        return [
+        $configuration = [
             // These will be mapped to a namespaced EditorOption in Tiny.
             'courseid' => $COURSE->id,
-            'tool' => !empty($ltitool) ? $ltitool : new \stdClass(),
             'wwwroot' => $CFG->wwwroot,
             'contentitempath' => '/lib/editor/tiny/plugins/panoptoltibutton/contentitem.php',
             'resourcebase' => $resourcebase,
@@ -119,5 +116,11 @@ class plugininfo extends plugin implements
             // editor saves them as its marker links instead.
             'panoptofilteractive' => array_key_exists('panopto', filter_get_active_in_context($context)),
         ];
+
+        if (!empty($ltitool)) {
+            $configuration['tool'] = $ltitool;
+        }
+
+        return $configuration;
     }
 }
