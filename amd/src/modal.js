@@ -36,4 +36,6 @@ const PanoptoModal = class extends Modal {
     }
 };
 
+PanoptoModal.registerModalType();
+
 export default PanoptoModal;
